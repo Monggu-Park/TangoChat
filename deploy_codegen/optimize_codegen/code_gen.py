@@ -32,8 +32,8 @@ import requests
 # import      subprocess
 # import      importlib
 # code_gen.py
-import      torch
-import      torch.onnx
+import torch
+import torch.onnx
 import tensorflow as tf
 # from        torchvision import  models
 # from        onnxruntime.quantization import  quantize_dynamic

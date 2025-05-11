@@ -59,7 +59,7 @@ RUN cmake -S llvm -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
 RUN ninja -C build install
 
 WORKDIR /app
-RUN git clone --recursive https://github.com/apache/tvm tvm
+RUN git clone --recursive --branch v0.19.0 https://github.com/apache/tvm tvm
 WORKDIR /app/tvm
 RUN rm -rf build && mkdir build 
 WORKDIR /app/tvm/build
