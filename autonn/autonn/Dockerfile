@@ -23,9 +23,14 @@ ENV CUDA_LAUNCH_BLOCKING=1
 # RUN curl https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
 # RUN echo "deb https://packages.cloud.google.com/apt coral-edgetpu-stable main" | tee /etc/apt/sources.list.d/coral-edgetpu.list
 
-RUN apt-get update
-RUN apt-get upgrade -y
-RUN apt-get -y install libgl1-mesa-glx
+# RUN apt-get update
+# RUN apt-get upgrade -y
+# RUN apt-get -y install libgl1-mesa-glx
+RUN apt-get clean && \
+    rm -rf /var/lib/apt/lists/* && \
+    apt-get update --allow-releaseinfo-change || true && \
+    apt-get upgrade -y && \
+    apt-get -y install libgl1-mesa-glx
 # RUN apt-get install libusb-1.0-0
 # RUN apt-get install edgetpu-compiler
 # RUN curl -fsSL https://ollama.com/install.sh | sh
@@ -69,14 +74,22 @@ RUN pip install typing_extensions
 RUN pip install urllib3==1.26.7
 
 # llm --------------------------------------------------------------------------
-# RUN pip install beautifulsoup4
-# RUN pip install chromadb==0.3.29
-# RUN pip install git-lfs==1.6
-# RUN pip install huggingface_hub
-# RUN pip install langchain==0.2.17
-# RUN pip install langchain-community==0.2.19
-# RUN pip install ollama
-# RUN pip install streamlit>=1.31.0
+RUN pip install beautifulsoup4
+RUN pip install numpy>=1.22.0
+RUN pip install pandas>=1.3.0
+RUN pip install pydantic==1.10.13
+RUN pip install typing-extensions>=4.5.0
+RUN pip install git-lfs==1.6
+RUN pip install huggingface_hub
+RUN pip install langchain==0.2.17
+RUN pip install langchain-community==0.2.19
+RUN pip install langchain-text-splitters
+RUN pip install ollama>=0.1.0
+RUN pip install streamlit>=1.31.0
+RUN pip install chromadb==0.3.29 --no-deps
+RUN pip install hnswlib==0.7.0
+RUN pip install sentence-transformers==2.2.2
+RUN pip install chromadb==0.3.29
 
 # model export -----------------------------------------------------------------
 # RUN pip install distributed

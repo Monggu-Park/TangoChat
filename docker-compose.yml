@@ -96,7 +96,8 @@ services:
     command: >
       sh -c "python manage.py makemigrations &&
              python manage.py migrate &&
-             python manage.py runserver 0.0.0.0:8100"
+             python manage.py runserver 0.0.0.0:8100 &
+             streamlit run /source/autonn_core/tangochat/browser.py --server.port 8101 --browser.gatherUsageStats false"
     deploy:
       resources:
         reservations:
@@ -110,6 +111,7 @@ services:
                 - video
     environment:
       - NVIDIA_VISIBLE_DEVICES=${GPU_NUM:-all}
+      - OLLAMA_HOST=http://host.docker.internal:11434
     volumes:
       - ./autonn/autonn:/source
       - shared:/shared

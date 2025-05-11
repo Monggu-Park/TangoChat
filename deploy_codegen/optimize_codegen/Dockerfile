@@ -93,30 +93,30 @@ RUN apt-get update && apt-get install -y  \
 
 # android sdk
 RUN echo 'y\n\
-y\n\
-y\n\
-y\n\
-y\n\
-y\n\
-y\n\
-y\n\
-y\n\
-y\n\
-y\n\ 
-'> /app/yes.txt
+    y\n\
+    y\n\
+    y\n\
+    y\n\
+    y\n\
+    y\n\
+    y\n\
+    y\n\
+    y\n\
+    y\n\ 
+    '> /app/yes.txt
 
 RUN echo '\n\
-\n\
-\n\
-\n\
-\n\
-\n\
-\n\
-\n\
-\n\
-\n\
-\n\
-' > /app/enter.txt
+    \n\
+    \n\
+    \n\
+    \n\
+    \n\
+    \n\
+    \n\
+    \n\
+    \n\
+    \n\
+    ' > /app/enter.txt
 
 #install android sdk
 ENV FORMAT=float32
