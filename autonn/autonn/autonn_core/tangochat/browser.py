@@ -24,12 +24,12 @@ import streamlit as st
 #     remove_model,
 #     _get_diretory_size
 # )
-# from tangochat.inference.generate import (  
-#     Generator,
-#     BuilderArgs,
-#     TokenizerArgs,
-#     GeneratorArgs
-# )
+from tangochat.inference.generate import (  
+    Generator,
+    BuilderArgs,
+    TokenizerArgs,
+    GeneratorArgs
+)
 from tangochat.tuner.rag import (
     load_and_retrieve_docs, 
     get_rag_formatted_prompt,
@@ -197,7 +197,7 @@ def switch_ollama_model():
 #             "***Tiny-Llama-stories42M***",
 #             "***Tiny-Llama-stories110M***",
 #         ]
-tab1, tab2, tab3, tab4 = st.tabs(["**DOWNLOAD**", "**RUN**", "**DELETE**", "**RAG**"])
+tab1, tab2, tab3, tab4, tab5, tab6= st.tabs(["**DOWNLOAD**", "**RUN**", "**DELETE**", "**RAG**", "**FINETUNE**", "**DEPLOY**"])
 lists_for_ollama = {
             "llama3.2"      : "***Llama 3.2***   (3B)",
             "llama3.1"      : "***Llama 3.1***   (8B)",
@@ -337,7 +337,7 @@ with tab4:
             label="**:blue[VECTOR] to LLM ⇇ :red[TEXT] from URL**", 
             options=list(embed_lists.keys()),
             format_func=lambda x: embed_lists[x],
-            # captions=captions_embed,
+            captions=captions_embed,
         )
         emb_btn = st.button("PULL & APPLY", type="primary")
         if emb_btn:
@@ -346,7 +346,7 @@ with tab4:
                 ollama.pull(embed_model)
                 elapsed_time = time.time()-start
                 st.write(f"Done({elapsed_time:.2f} sec).")
-            # st.session_state.rag['active'] = True
+            st.session_state.rag['active'] = True
             st.session_state.rag['embed'] = embed_model
             sts1.update(label=f"{embed_model} is successfully applied.", state="complete")
         # if st.session_state.rag['active'] == True:
@@ -365,7 +365,7 @@ with tab4:
                 logger.info(f'Retreive button clicked!!!')
                 with st.status("Retrieving... ", expanded=False) as sts2:
                     start = time.time()
-                    # import chromadb
+                    import chromadb
                     # chromadb.api.client.SharedSystemClient.clear_system_cache()
                     _emb_model = st.session_state.rag['embed']
                     logger.info(f'embeddign model: {_emb_model}')
@@ -374,9 +374,9 @@ with tab4:
                     elapsed_time = time.time()-start
                     st.write(f"Done({elapsed_time:.2f} sec).")
                     st.session_state.rag['retriever'] = _retriever
-                    # st.session_state['messages'] = start_state
+                    st.session_state['messages'] = start_state
                     st.session_state.rag['active'] = True
-                    # switch_ollama_model()
+                    switch_ollama_model()
                 sts2.update(label=f"successfully retrieved.", state="complete")
             else:
                 logger.warning(f'Failed to retreive URL: rag active? {st.session_state.rag["active"]}, url? {_url}')
@@ -384,58 +384,58 @@ with tab4:
             st.text(f"TangoChat retrieves from")
             st.markdown(f"***{_url}***")
 
-# with tab5:
-#     finetune_list = st.radio("What would you finetune?", local_lists)
-#     if len(local_lists) > 0:
-#         finetune_model = finetune_list.split("***")[1]
-#         finetune_btn = st.button("FineTune", type="primary")
-#         if finetune_btn:
-#             logger.info(f"Try improve this LLM:{finetune_list} through finetuning")
+with tab5:
+    finetune_list = st.radio("What would you finetune?", local_lists)
+    if len(local_lists) > 0:
+        finetune_model = finetune_list.split("***")[1]
+        finetune_btn = st.button("FineTune", type="primary")
+        if finetune_btn:
+            logger.info(f"Try improve this LLM:{finetune_list} through finetuning")
 
-# with tab6:
-#     deploy_list = st.radio("Select a LLM as TANGO+CHAT brain", local_lists)
-#     if len(local_lists) > 0:
-#         deploy_model = deploy_list.split("***")[1]
-#         deploy_btn = st.button("Deploy", type="primary")
-#         if deploy_btn:
-#             logger.info(f"Try improve this LLM:{deploy_list} as the Tango+Chat brain")
+with tab6:
+    deploy_list = st.radio("Select a LLM as TANGO+CHAT brain", local_lists)
+    if len(local_lists) > 0:
+        deploy_model = deploy_list.split("***")[1]
+        deploy_btn = st.button("Deploy", type="primary")
+        if deploy_btn:
+            logger.info(f"Try improve this LLM:{deploy_list} as the Tango+Chat brain")
 
 # apply a local model to TangoChat ---------------------------------------------
-# def set_generator():
-#     model_name = st.session_state.brain['local_gen_name']
-#     args = st.session_state.brain['local_gen_args']
-#     logger.info(f"{st.session_state.brain}")
-#     if model_name is None:
-#         return
-#     args.model = model_name
-#     # args.prompt = prompt
-#     with st.status(label=f"Loading {model_name.upper()}... ", expanded=True) as l_sts:
-#         start = time.time()
-#         builder_args = BuilderArgs.from_args(args)
-#         speculative_builder_args = BuilderArgs.from_speculative_args(args)
-#         tokenizer_args = TokenizerArgs.from_args(args)
-#         generator_args = GeneratorArgs.from_args(args)
-#         TANGOCHAT = Generator(
-#             builder_args,
-#             speculative_builder_args,
-#             tokenizer_args,
-#             generator_args,
-#             args.profile,
-#             args.quantize,
-#             args.draft_quantize,
-#         )
-#         st.balloons()
-#         l_sts.update(
-#             label=f"Done. ({time.time() - start:.2f} sec)",
-#             state="complete",
-#         )
-#     st.session_state.brain['local_gen_obj'] = TANGOCHAT
-#     st.session_state.brain['local_gen_args'] = args
-#     st.session_state['messages'] = start_state
-#     for msg in st.session_state.messages:
-#         if msg['role'] == 'system':
-#             msg['content'] = f"Let's talk to **{model_name.upper()}** !!"
-#     return
+def set_generator():
+    model_name = st.session_state.brain['local_gen_name']
+    args = st.session_state.brain['local_gen_args']
+    logger.info(f"{st.session_state.brain}")
+    if model_name is None:
+        return
+    args.model = model_name
+    # args.prompt = prompt
+    with st.status(label=f"Loading {model_name.upper()}... ", expanded=True) as l_sts:
+        start = time.time()
+        builder_args = BuilderArgs.from_args(args)
+        speculative_builder_args = BuilderArgs.from_speculative_args(args)
+        tokenizer_args = TokenizerArgs.from_args(args)
+        generator_args = GeneratorArgs.from_args(args)
+        TANGOCHAT = Generator(
+            builder_args,
+            speculative_builder_args,
+            tokenizer_args,
+            generator_args,
+            args.profile,
+            args.quantize,
+            args.draft_quantize,
+        )
+        st.balloons()
+        l_sts.update(
+            label=f"Done. ({time.time() - start:.2f} sec)",
+            state="complete",
+        )
+    st.session_state.brain['local_gen_obj'] = TANGOCHAT
+    st.session_state.brain['local_gen_args'] = args
+    st.session_state['messages'] = start_state
+    for msg in st.session_state.messages:
+        if msg['role'] == 'system':
+            msg['content'] = f"Let's talk to **{model_name.upper()}** !!"
+    return
 
 
 
@@ -445,20 +445,20 @@ if st.session_state.brain['local_gen_obj'] == None:
     # set_generator()
     switch_ollama_model()
 
-# def show_img_loader():
-#     with st.sidebar:
-#         image_prompts = st.file_uploader(
-#             "Image Prompts",
-#             type=["jpeg"],
-#             accept_multiple_files=True,
-#             key=st.session_state.uploader_key,
-#         )
+def show_img_loader():
+    with st.sidebar:
+        image_prompts = st.file_uploader(
+            "Image Prompts",
+            type=["jpeg"],
+            accept_multiple_files=True,
+            key=st.session_state.uploader_key,
+        )
 
-#         for image in image_prompts:
-#             st.image(image)
+        for image in image_prompts:
+            st.image(image)
 
-# if st.session_state.img_prompt == 'visible':
-#     show_img_loader()
+if st.session_state.img_prompt == 'visible':
+    show_img_loader()
 
 if st.session_state.rag == 'active':
     with st.sidebar:
@@ -501,8 +501,11 @@ for msg in st.session_state.messages:
 # user message input -----------------------------------------------------------
 if prompt := st.chat_input():
     if st.session_state.rag['active']:
-        _retriever = st.session_state.rag['retriever']
-        prompt = get_rag_formatted_prompt(_retriever, prompt)
+        _retriever = st.session_state.rag.get('retriever', None)
+        if _retriever is not None:
+            prompt = get_rag_formatted_prompt(_retriever, prompt)
+        else:
+            st.warning("RAG가 활성화되어 있지만 retriever가 없습니다. 먼저 Retrieve를 눌러주세요.")
 
     user_message = {
         "role": "user",
@@ -599,26 +602,26 @@ if prompt := st.chat_input():
             )
 
         # use local sources ----------------------------------------------------
-        # def get_answer():
-        #     TANGOCHAT = st.session_state.brain['local_gen_obj']
-        #     args = st.session_state.brain['local_gen_args']
-        #     if torch.cuda.is_available():
-        #         torch.cuda.reset_peak_memory_stats()
-        #     start = time.time()
-        #     tokcount = 0
-        #     generator_args = GeneratorArgs.from_args(args)
-        #     generator_args.prompt = prompt
-        #     for chunk in TANGOCHAT.chat(generator_args):
-        #         logger.info(f"TANGOCHAT.chat().type = {type(chunk)}")
-        #         logger.info(chunk)
-        #         tokcount += 1
-        #         yield chunk[0]
-        #     status.update(
-        #         label="Done, averaged {:.2f} tockens/second".format(
-        #             tokcount / {time.time() - start}
-        #         ),
-        #         state="complete",
-        #     )
+        def get_answer():
+            TANGOCHAT = st.session_state.brain['local_gen_obj']
+            args = st.session_state.brain['local_gen_args']
+            if torch.cuda.is_available():
+                torch.cuda.reset_peak_memory_stats()
+            start = time.time()
+            tokcount = 0
+            generator_args = GeneratorArgs.from_args(args)
+            generator_args.prompt = prompt
+            for chunk in TANGOCHAT.chat(generator_args):
+                logger.info(f"TANGOCHAT.chat().type = {type(chunk)}")
+                logger.info(chunk)
+                tokcount += 1
+                yield chunk[0]
+            status.update(
+                label="Done, averaged {:.2f} tockens/second".format(
+                    tokcount / {time.time() - start}
+                ),
+                state="complete",
+            )
 
         try:
             # response = st.write_stream(
