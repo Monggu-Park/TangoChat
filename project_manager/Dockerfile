@@ -8,7 +8,7 @@ RUN npm install
 RUN npm run build
 # ============================================================
 
-FROM python:3.7
+FROM python:3.10
 
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1

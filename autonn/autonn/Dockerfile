@@ -1,3 +1,4 @@
+
 # --------- Frontend : base-NodeJS, React ----------
 FROM node:20-alpine AS builder
 
@@ -10,8 +11,9 @@ RUN npm install --force
 RUN npm run build
 
 # ---------- Backend : base-NNI, Django ------------
-# FROM python:3.8
+# FROM python:3.10
 FROM msranni/nni
+FROM python:3.10
 # FROM nvcr.io/nvidia/pytorch:23.05-py3
 
 # ENV TF_ENABLE_ONEDNN_OPTS=0
@@ -55,7 +57,7 @@ RUN pip install matplotlib>=3.5.1
 RUN pip install opencv-python==4.7.0.72
 RUN pip install pandas==1.4.2
 RUN pip install Pillow>=8.4.0
-RUN pip install protobuf==3.20.3
+RUN pip install protobuf==6.30.2
 RUN pip install psycopg2-binary==2.9.3
 RUN pip install pycocotools
 RUN pip install pytorch-lightning==0.8.3
@@ -65,7 +67,7 @@ RUN pip install requests==2.28.0
 RUN pip install seaborn==0.11.2
 RUN pip install setuptools==59.5.0
 RUN pip install sqlparse==0.4.2
-RUN pip install tensorboardX==2.6
+RUN pip install tensorboardX==2.6.2.2
 RUN pip install thop>=0.1.1
 RUN pip install torch==1.13.1
 RUN pip install torchvision==0.14.1
@@ -77,20 +79,20 @@ RUN pip install urllib3==1.26.7
 RUN pip install beautifulsoup4
 RUN pip install numpy>=1.22.0
 RUN pip install pandas>=1.3.0
-RUN pip install pydantic==1.10.13
+RUN pip install pydantic>=2.0
 RUN pip install typing-extensions>=4.5.0
 RUN pip install git-lfs==1.6
 RUN pip install huggingface_hub
 RUN pip install langchain==0.2.17
 RUN pip install langchain-community==0.2.19
 RUN pip install langchain-text-splitters
-RUN pip install ollama>=0.1.0
+RUN pip install ollama
 RUN pip install streamlit>=1.31.0
-RUN pip install chromadb==0.3.29 --no-deps
+RUN pip install chromadb>=0.4.0 --no-deps
 RUN pip install hnswlib==0.7.0
 RUN pip install sentence-transformers==2.2.2
-RUN pip install chromadb==0.3.29
-
+RUN pip install chromadb>=0.4.0
+RUN pip install fastapi>=0.104.0
 # model export -----------------------------------------------------------------
 # RUN pip install distributed
 # RUN pip install flatbuffers==24.3.25

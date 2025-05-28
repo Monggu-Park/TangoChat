@@ -1,6 +1,6 @@
 # Enforce x86 arch image since TANGO manager will be running in x86 machine.
+FROM python:3.10
 FROM --platform=linux/amd64 ubuntu:22.04
-
 RUN apt update \
     && apt install -y xz-utils \
     && apt clean \
