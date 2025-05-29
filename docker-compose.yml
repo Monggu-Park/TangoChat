@@ -286,9 +286,9 @@ services:
   # code_gen Build
   #---------------------------------
   code_gen:
-    # build:
-    #   context: ./deploy_codegen/optimize_codegen
-    image: codegen
+    build:
+       context: ./deploy_codegen/optimize_codegen
+    #image: codegen
     hostname: codeGen
     volumes:
       - ./deploy_codegen/optimize_codegen:/source

@@ -32,7 +32,9 @@ def load_and_retrieve_docs(url, emb_model):
     docs = loader.load()
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
     splits = text_splitter.split_documents(docs)
-    embeddings = OllamaEmbeddings(model=emb_model) #"mxbai-embed-large"
+    import os
+    OLLAMA_URL = os.getenv("OLLAMA_HOST", "http://localhost:11434")
+    embeddings = OllamaEmbeddings(model=emb_model, base_url=OLLAMA_URL) #"mxbai-embed-large"
     vectorstore = Chroma.from_documents(documents=splits, embedding=embeddings)
     return vectorstore.as_retriever()
 

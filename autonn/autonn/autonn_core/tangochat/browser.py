@@ -273,7 +273,7 @@ with tab2:
     local_lists = []
     for m in dn_lists:
         # local_lists.append(f"***{m['name'].split(':')[0]}***")
-        key = f"{m['name'].split(':')[0]}"
+        key = f"{m['model'].split(':')[0]}"
         value = lists_for_ollama.get(key, None)
         if value is not None:
             local_lists.append(value)
@@ -361,7 +361,7 @@ with tab4:
         st.session_state.rag['url'] = _url
         rt_btn = st.button("Retrieve", type='primary')
         if rt_btn:
-            if not st.session_state.rag['active'] and _url is not None:
+            if st.session_state.rag['active'] and _url is not None:
                 logger.info(f'Retreive button clicked!!!')
                 with st.status("Retrieving... ", expanded=False) as sts2:
                     start = time.time()
