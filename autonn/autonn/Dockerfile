@@ -84,7 +84,7 @@ RUN pip install huggingface_hub
 RUN pip install langchain==0.2.17
 RUN pip install langchain-community==0.2.19
 RUN pip install langchain-text-splitters
-RUN pip install ollama>=0.1.0
+RUN pip install ollama==0.3.3
 RUN pip install streamlit>=1.31.0
 RUN pip install chromadb==0.3.29 --no-deps
 RUN pip install hnswlib==0.7.0
